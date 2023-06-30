@@ -81,7 +81,7 @@ func (br *BinaryReader) convert(dataType convType, dataAmount int) any {
 	}
 }
 
-func (br *BinaryReader) OpChar() byte {
+func (br *BinaryReader) OpCharacter() byte {
 	return br.convert(convTypeCharacter, 1).([]byte)[0]
 }
 

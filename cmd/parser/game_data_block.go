@@ -36,7 +36,7 @@ func (gdb *GameDataBlock) next() any {
 }
 
 func (gdb *GameDataBlock) ValueBool() bool {
-	return gdb.reader.OpChar() != 0
+	return gdb.reader.OpCharacter() != 0
 }
 
 func (gdb *GameDataBlock) ValueString() string {

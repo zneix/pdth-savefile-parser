@@ -28,8 +28,8 @@ func NewSaveFile(path string) *SaveFile {
 	}
 
 	filesize := len(content)
-
 	reader := NewBinaryReader(content, filesize, 0)
+
 	savefile.version = reader.OpUint32()
 	savefile.header = NewDataBlock(reader)
 	savefile.gamedata = NewGameDataBlock(reader)
@@ -47,7 +47,7 @@ func (sf *SaveFile) Contents() any {
 }
 
 func main() {
-	savefile := NewSaveFile("./save099.sav")
+	savefile := NewSaveFile(os.Args[1])
 	data := savefile.Contents().(map[any]any)
 	//fmt.Printf("%.0f\n", data["ExperienceManager"].(map[any]any)["total"])
 
