@@ -109,19 +109,7 @@ func (br *BinaryReader) OpBytes(byteAmount int) []byte {
 	return result
 }
 
-// OpDump as far as I can understand is some debugging/printing method
-// used to specify amount of string-characters to print
-// because we want a string, but we get a hex pairs, we gotta multiply charAmount by 2 to account for that
-/*
-func (br *BinaryReader) OpDump(charAmount int) { // returns void
-	br.checkBounds(charAmount)
-
-	result := hex.EncodeToString(br.binary[br.offset : br.offset+(charAmount*2)])
-	fmt.Println(result)
-}
-*/
-
-func (br *BinaryReader) OpSkip(byteAmount int) { // returns void
+func (br *BinaryReader) OpSkip(byteAmount int) {
 	br.checkBounds(byteAmount)
 	br.offset += byteAmount
 }
