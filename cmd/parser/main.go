@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/json-iterator/go"
 )
 
 // SaveFile
@@ -26,13 +28,12 @@ func NewSaveFile(path string) *SaveFile {
 	}
 
 	filesize := len(content)
-	//fmt.Println("DEBUG binary file size:", filesize)
 
 	reader := NewBinaryReader(content, filesize, 0)
 	savefile.version = reader.OpUint32()
 	savefile.header = NewDataBlock(reader)
 	savefile.gamedata = NewGameDataBlock(reader)
-	//savefile.footer = NewDataBlock(reader)
+	//savefile.footer = NewDataBlock(reader) // XXX: Doesn't work yet, leave it unimplemented
 
 	return savefile
 }
@@ -48,13 +49,11 @@ func (sf *SaveFile) Contents() any {
 func main() {
 	savefile := NewSaveFile("./save099.sav")
 	data := savefile.Contents().(map[any]any)
-	fmt.Printf("%.0f\n", data["ExperienceManager"].(map[any]any)["total"])
-}
+	//fmt.Printf("%.0f\n", data["ExperienceManager"].(map[any]any)["total"])
 
-/*
 	dataJSON, err := jsoniter.Config{
 		EscapeHTML:                    false,
-		MarshalFloatWith6Digits:       false,
+		MarshalFloatWith6Digits:       true,
 		ObjectFieldMustBeSimpleString: true,
 		SortMapKeys:                   true,
 	}.Froze().MarshalToString(data)
@@ -64,4 +63,3 @@ func main() {
 	}
 	fmt.Println(dataJSON)
 }
-*/

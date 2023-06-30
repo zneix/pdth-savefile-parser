@@ -42,12 +42,9 @@ func (br *BinaryReader) checkBounds(byteAmount int) {
 type convType int
 
 const (
-	// unpack 'C'
-	convTypeCharacter convType = iota
-	// unpack 'V'
-	convTypeUint32
-	// unpack 'g'
-	convTypeFloat32
+	convTypeCharacter convType = iota // unpack 'C'
+	convTypeUint32                    // unpack 'V'
+	convTypeFloat32                   // unpack 'g'
 )
 
 func (br *BinaryReader) convert(dataType convType, dataAmount int) any {
@@ -56,20 +53,12 @@ func (br *BinaryReader) convert(dataType convType, dataAmount int) any {
 	switch dataType {
 	// character: 1-byte
 	case convTypeCharacter:
-		//for i := 0; i < dataAmount; i++ {
-		//// since we need a 0 or 1 to create boolean's value here, it's enough if we simply return the binary character by itself
-		////result = append(result, br.binary[br.offset : br.offset+1][0])
-		//result = append(result, br.binary[br.offset])
-		//}
 		result := br.binary[br.offset : br.offset+dataAmount]
 		br.offset += dataAmount
 		return result
 
 	// unsigned integer: 4-bytes
 	case convTypeUint32:
-		//for i := 0; i < dataAmount; i++ {
-		//result = append(result, binary.LittleEndian.Uint32(br.binary[br.offset:br.offset+4]))
-		//}
 		result := make([]uint32, dataAmount)
 		_ = binary.Read(
 			bytes.NewReader(br.binary[br.offset:br.offset+(4*dataAmount)]),
@@ -81,10 +70,6 @@ func (br *BinaryReader) convert(dataType convType, dataAmount int) any {
 
 	// float: 4-bytes
 	case convTypeFloat32:
-		//for i := 0; i < dataAmount; i++ {
-		//ourData := binary.LittleEndian.Uint32(br.binary[i*4 : i*4+4])
-		//result = append(result, math.Float32frombits(ourData))
-		//}
 		result := make([]float32, dataAmount)
 		_ = binary.Read(bytes.NewReader(br.binary[br.offset:br.offset+(4*dataAmount)]), binary.LittleEndian, &result)
 		br.offset += dataAmount
@@ -111,14 +96,6 @@ func (br *BinaryReader) OpFloat32() float32 {
 func (br *BinaryReader) OpString(byteAmount int) string {
 	br.checkBounds(byteAmount)
 
-	//data := br.binary[br.offset : br.offset+byteAmount]
-	//dataHex := hex.EncodeToString(data)
-	//dataString, err := hex.DecodeString(dataHex)
-	//if err != nil {
-	//panic(fmt.Errorf("failed to convert %d bytes at offset %d: %w", byteAmount, br.offset, err))
-	//}
-
-	// seems like the whole hex-fiesta is rather unnecessary and this works just fine
 	result := string(br.binary[br.offset : br.offset+byteAmount])
 	br.offset += byteAmount + 1 // include null byte terminator
 	return result
@@ -149,16 +126,7 @@ func (br *BinaryReader) OpSkip(byteAmount int) { // returns void
 	br.offset += byteAmount
 }
 
-// OpFindStringSize finds at which index []byte is present in the binary string
-// FIXME: comments below are incorrect
-// ~~TODO~~: Consider dropping this and instead just use
-// bytes.Index or bytes.IndexByte in the 1 place where this method is needed
-func (br *BinaryReader) OpFindStringSize(singleByte byte) int { // returns just the position
+// OpFindStringSize finds at which index singleByte is present in the binary string
+func (br *BinaryReader) OpFindStringSize(singleByte byte) int {
 	return bytes.IndexByte(br.binary[br.offset:], singleByte)
-	//pos := strings.Index(string(br.binary[br.offset:]), string(singleByte)) // slow AF
-
-	//if pos != -1 {
-	//return pos - br.offset // INCORRECT LOGIC, pos already skips br.offset because of '[br.offset:]' construction
-	//}
-	//return -1
 }
