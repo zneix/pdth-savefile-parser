@@ -96,7 +96,7 @@ func main() {
 		SortMapKeys:                   true,
 	}.Froze().MarshalToString(data)
 	if err != nil {
-		fmt.Println("fdm:", err)
+		fmt.Println("failed to marshal data:", err)
 		return
 	}
 	fmt.Println(dataJSON)

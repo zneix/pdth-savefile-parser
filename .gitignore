@@ -1,0 +1,11 @@
+# binaries
+parser
+strdump
+
+# all instances of parsed/binary data
+*.json
+*.sav
+
+# other parsers
+lua/
+sav_reader.php
