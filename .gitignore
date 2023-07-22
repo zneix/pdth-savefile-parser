@@ -1,6 +1,7 @@
 # binaries
 parser
 strdump
+*.exe
 
 # all instances of parsed/binary data
 *.json
