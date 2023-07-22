@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        go: ["1.19", "1.20"]
+        os: [ubuntu-22.04, windows-latest]
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2.1.4
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Check out into the Go module directory
+        uses: actions/checkout@v2.3.4
+
+      - name: Get dependencies
+        run: go get -v -t -d ./...
+
+      - name: Build
+        run: go build -ldflags="-s -w" -v -o ../../build/parser
+        working-directory: cmd/parser
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: parser-${{ matrix.go }}-${{ matrix.os }}
+          path: build/parser
